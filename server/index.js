@@ -1,3 +1,4 @@
+const { verify } = require("./google_auth");
 const { sequelize } = require("./database/db");
 const express = require("express");
 
@@ -14,9 +15,14 @@ const app = express();
 app.use(express.json());
 const port = 3000;
 
-app.get("/bruh", (req, res) => {
-  res.send("hi");
+app.get("/verify", async (req, res) => {
+  let token = req.query.token;
+  let payload = await verify(token);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.json(payload);
 });
+
 app.listen(port, async () => {
   console.log(`Listening on port ${port}...`);
 });
